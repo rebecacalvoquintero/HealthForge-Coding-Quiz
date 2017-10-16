@@ -1,15 +1,29 @@
-import React from 'react';
+import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
-import { Provider } from 'react-redux';
-import { createStore, applyMiddleware } from 'redux';
+import SearchBar from './components/search_bar';
+import PatientsList from './components/patients_list';
+import XhrRequest from './api_request';
 
-import App from './components/app';
-import reducers from './reducers';
+class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      patientsData: []
+    };
+    XhrRequest('https://api.interview.healthforge.io:443/api/patient?size=10', (patientsData) => {
+      this.setState({patientsData})
+    });
 
-const createStoreWithMiddleware = applyMiddleware()(createStore);
+  }
+  render() {
+    return (
+      <div>
+        <SearchBar />
+        <PatientsList patientsData={this.state.patientsData} />
+      </div>
+    );
+  }
+}
 
 ReactDOM.render(
-  <Provider store={createStoreWithMiddleware(reducers)}>
-    <App />
-  </Provider>
-  , document.querySelector('.container'));
+  <App/>, document.querySelector('.container'));
