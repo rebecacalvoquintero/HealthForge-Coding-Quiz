@@ -3,43 +3,43 @@ import ReactDOM from 'react-dom';
 import SearchBar from './components/search_bar';
 import PatientsList from './components/patients_list';
 import PatientsListItem from './components/patients_list_item';
-import XhrRequest from './api_request';
 import axios from 'axios';
 
 class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      patientsData: []
+      patientsData: [],
+      searchTerm: ""
     };
 
     this.patientSearch('');
 
   }
 
-  // componentDidMount() {
-  //   axios.get(`http://www.reddit.com/r/${this.props.subreddit}.json`)
-  //     .then(res => {
-  //       const posts = res.data.data.children.map(obj => obj.data);
-  //       this.setState({ posts });
-  //     });
-  // }
+  patientSearch = (searchTerm) => {
+    console.log('searchTerm: ', searchTerm)
 
-
-  patientSearch = (term) => {
-    XhrRequest('https://api.interview.healthforge.io:443/api/patient?size=1000', (patientsData) => {
-      this.setState({
-        patientsData: patientsData.content,
-
+    axios.get('https://api.interview.healthforge.io:443/api/patient?size=1000')
+      .then(response => {
+        this.setState({
+          patientsData: response.data.content.filter(patient => {
+            return (
+              ((patient.firstName).toUpperCase()).includes(searchTerm.toUpperCase()) ||
+              ((patient.lastName).toUpperCase()).includes(searchTerm.toUpperCase())
+            );
+          })
         })
-    })
-  }
+      })
+      .catch(error => console.log(error));
+    }
+
 
   render() {
     return (
       <div>
-        <SearchBar onSearchTermChange ={term => this.patientSearch(term)}/>
-        <PatientsList patientsData={this.state.patientsData} />
+        <SearchBar onSearchTermChange={searchTerm => this.patientSearch(searchTerm)}/>
+        <PatientsList patientsData={this.state.patientsData}/>
       </div>
     );
   }
