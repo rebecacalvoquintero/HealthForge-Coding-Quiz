@@ -30,8 +30,8 @@ class App extends Component {
   render() {
     const filteredPatientsData = this.state.patientsData.filter(patient => {
       return (
-        ((patient.firstName).toUpperCase()).includes(this.state.searchTerm.toUpperCase()) ||
-        ((patient.lastName).toUpperCase()).includes(this.state.searchTerm.toUpperCase())
+        patient.firstName.toUpperCase().includes(this.state.searchTerm.toUpperCase()) ||
+        patient.lastName.toUpperCase().includes(this.state.searchTerm.toUpperCase())
       );
     })
 
