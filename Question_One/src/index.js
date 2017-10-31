@@ -13,33 +13,32 @@ class App extends Component {
       searchTerm: ""
     };
 
-    this.patientSearch('');
-
-  }
-
-  patientSearch = (searchTerm) => {
-    console.log('searchTerm: ', searchTerm)
-
     axios.get('https://api.interview.healthforge.io:443/api/patient?size=1000')
       .then(response => {
         this.setState({
-          patientsData: response.data.content.filter(patient => {
-            return (
-              ((patient.firstName).toUpperCase()).includes(searchTerm.toUpperCase()) ||
-              ((patient.lastName).toUpperCase()).includes(searchTerm.toUpperCase())
-            );
-          })
+          patientsData: response.data.content
         })
       })
       .catch(error => console.log(error));
+  }
+
+  patientSearch = (searchTerm) => {
+    this.setState({searchTerm})
     }
 
 
   render() {
+    const filteredPatientsData = this.state.patientsData.filter(patient => {
+      return (
+        patient.firstName.toUpperCase().includes(this.state.searchTerm.toUpperCase()) ||
+        patient.lastName.toUpperCase().includes(this.state.searchTerm.toUpperCase())
+      );
+    })
+
     return (
       <div>
         <SearchBar onSearchTermChange={searchTerm => this.patientSearch(searchTerm)}/>
-        <PatientsList patientsData={this.state.patientsData}/>
+        <PatientsList patientsData={filteredPatientsData}/>
       </div>
     );
   }
