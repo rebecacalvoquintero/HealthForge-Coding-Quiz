@@ -8,7 +8,10 @@ class PatientsList extends Component {
 
     this.state = {
       sortingColumn: "",
-      direction: ""
+      direction: "",
+      currentPage: 0,
+      pageSize: 10
+
     };
 
   }
@@ -16,6 +19,23 @@ class PatientsList extends Component {
   setSorting = (sortingColumn, direction) => () =>{
     this.setState({sortingColumn, direction})
   }
+
+  setPaging = (currentPage, pageSize) => () => {
+    this.setState({currentPage, pageSize})
+  }
+
+  incrementPage = () => {
+    
+    this.setState({currentPage: this.state.currentPage + 1})
+  }
+
+  decrementPage = () => {
+    if (this.state.currentPage !== 0) {
+      this.setState({currentPage: this.state.currentPage - 1})
+    }
+
+  }
+
 
   render () {
       let patientItems = this.props.patientsData.sort((a,b) => {
@@ -30,11 +50,18 @@ class PatientsList extends Component {
         }
       }).map((patientData, index) => {
         return <PatientsListItem key={index} patientData={patientData}/>
-      });
+      }).slice(
+        (this.state.currentPage * this.state.pageSize), (this.state.currentPage * this.state.pageSize) + 9
+      )
+      console.log('currentPage', this.state.currentPage);
+      console.log('pageSize', this.state.pageSize);
+
       if(this.state.direction === "dsc") {
         patientItems = patientItems.reverse();
       }
+
       return (
+        <div>
         <table className="patientsTable center">
           <thead>
             <tr>
@@ -65,8 +92,15 @@ class PatientsList extends Component {
             {patientItems}
           </tbody>
         </table>
+
+
+      <i className="arrow left fl pa2 ma4" onClick={this.decrementPage}></i>
+      <i className="arrow right fr pa2 ma4" onClick={this.incrementPage}></i>
+      </div>
+
+
       );
-    // }
+
 
   }
 }
