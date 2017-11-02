@@ -25,8 +25,9 @@ class PatientsList extends Component {
   }
 
   incrementPage = () => {
-    
-    this.setState({currentPage: this.state.currentPage + 1})
+    // if (!((this.state.currentPage + 1) * this.state.pageSize) < patientItems.length) {
+          this.setState({currentPage: this.state.currentPage + 1})
+    // }
   }
 
   decrementPage = () => {
@@ -51,10 +52,8 @@ class PatientsList extends Component {
       }).map((patientData, index) => {
         return <PatientsListItem key={index} patientData={patientData}/>
       }).slice(
-        (this.state.currentPage * this.state.pageSize), (this.state.currentPage * this.state.pageSize) + 9
+        (this.state.currentPage * this.state.pageSize), (this.state.currentPage * this.state.pageSize) + 10
       )
-      console.log('currentPage', this.state.currentPage);
-      console.log('pageSize', this.state.pageSize);
 
       if(this.state.direction === "dsc") {
         patientItems = patientItems.reverse();

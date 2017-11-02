@@ -4,7 +4,7 @@ const PatientsListItem = ({patientData}) => {
   return (
 
     <tr>
-    <td className="center"> {patientData.lastName} </td>
+    <a href='/patient_Detail'><td className="center"> {patientData.lastName} </td></a>
     <td className="center"> {patientData.firstName} </td>
     <td className="center"> {patientData.dateOfBirth}</td>
     </tr>
