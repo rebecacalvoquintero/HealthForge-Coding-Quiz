@@ -1,6 +1,5 @@
-import React, {Component}from 'react';
+import React, {Component} from 'react';
 import PatientsListItem from './patients_list_item';
-
 
 class PatientsList extends Component {
   constructor(props) {
@@ -16,7 +15,7 @@ class PatientsList extends Component {
 
   }
 
-  setSorting = (sortingColumn, direction) => () =>{
+  setSorting = (sortingColumn, direction) => () => {
     this.setState({sortingColumn, direction})
   }
 
@@ -25,42 +24,50 @@ class PatientsList extends Component {
   }
 
   incrementPage = () => {
-    // if (!((this.state.currentPage + 1) * this.state.pageSize) < patientItems.length) {
-          this.setState({currentPage: this.state.currentPage + 1})
-    // }
+    const patients = this.props.patientsData
+
+    if (((this.state.currentPage + 1) * this.state.pageSize) < patients.length) {
+      this.setState({
+        currentPage: this.state.currentPage + 1
+      })
+    }
   }
 
   decrementPage = () => {
     if (this.state.currentPage !== 0) {
-      this.setState({currentPage: this.state.currentPage - 1})
+      this.setState({
+        currentPage: this.state.currentPage - 1
+      })
     }
 
   }
 
+  render() {
 
-  render () {
-      let patientItems = this.props.patientsData.sort((a,b) => {
-        const aVal = a[this.state.sortingColumn]
-        const bVal = b[this.state.sortingColumn]
-        if(aVal < bVal) {
-          return -1
-        } else if(bVal < aVal) {
-          return + 1
-        } else {
-          return 0
-        }
-      }).map((patientData, index) => {
-        return <PatientsListItem key={index} patientData={patientData}/>
-      }).slice(
-        (this.state.currentPage * this.state.pageSize), (this.state.currentPage * this.state.pageSize) + 10
-      )
-
-      if(this.state.direction === "dsc") {
-        patientItems = patientItems.reverse();
+    let sortedPatients = this.props.patientsData.sort((a, b) => {
+      const aVal = a[this.state.sortingColumn]
+      const bVal = b[this.state.sortingColumn]
+      if (aVal < bVal) {
+        return -1
+      } else if (bVal < aVal) {
+        return + 1
+      } else {
+        return 0
       }
+    })
 
-      return (
-        <div>
+    if (this.state.direction === "dsc") {
+      sortedPatients = sortedPatients.reverse();
+    }
+
+    const pagePatients = sortedPatients
+    .slice((this.state.currentPage * this.state.pageSize), (this.state.currentPage * this.state.pageSize) + 10)
+    .map((patientData, index) => {
+      return <PatientsListItem key={index} patientData={patientData}/>
+    });
+
+    return (
+      <div>
         <table className="patientsTable center">
           <thead>
             <tr>
@@ -88,24 +95,18 @@ class PatientsList extends Component {
             </tr>
           </thead>
           <tbody>
-            {patientItems}
+            {pagePatients}
           </tbody>
         </table>
 
-
-      <i className="arrow left fl pa2 ma4" onClick={this.decrementPage}></i>
-      <i className="arrow right fr pa2 ma4" onClick={this.incrementPage}></i>
+        <i className="arrow left fl pa2 ma4" onClick={this.decrementPage}></i>
+        <i className="arrow right fr pa2 ma4" onClick={this.incrementPage}></i>
       </div>
 
-
-      );
-
+    );
 
   }
 }
-
-
-
 
 export default PatientsList;
 
