@@ -8,8 +8,6 @@ class PatientsList extends Component {
     this.state = {
       sortingColumn: "",
       direction: "",
-      currentPage: 0,
-      pageSize: 10
 
     };
 
@@ -19,28 +17,6 @@ class PatientsList extends Component {
     this.setState({sortingColumn, direction})
   }
 
-  setPaging = (currentPage, pageSize) => () => {
-    this.setState({currentPage, pageSize})
-  }
-
-  incrementPage = () => {
-    const patients = this.props.patientsData
-
-    if (((this.state.currentPage + 1) * this.state.pageSize) < patients.length) {
-      this.setState({
-        currentPage: this.state.currentPage + 1
-      })
-    }
-  }
-
-  decrementPage = () => {
-    if (this.state.currentPage !== 0) {
-      this.setState({
-        currentPage: this.state.currentPage - 1
-      })
-    }
-
-  }
 
   render() {
 
@@ -61,9 +37,9 @@ class PatientsList extends Component {
     }
 
     const pagePatients = sortedPatients
-    .slice((this.state.currentPage * this.state.pageSize), (this.state.currentPage * this.state.pageSize) + 10)
-    .map((patientData, index) => {
-      return <PatientsListItem key={index} patientData={patientData}/>
+    .slice((this.props.currentPage * this.props.pageSize), (this.props.currentPage * this.props.pageSize) + 10)
+    .map((patientData) => {
+      return <PatientsListItem key={patientData.id} patientData={patientData} setFocusedPatient={this.props.setFocusedPatient}/>
     });
 
     return (
@@ -99,8 +75,8 @@ class PatientsList extends Component {
           </tbody>
         </table>
 
-        <i className="arrow left fl pa2 ma4" onClick={this.decrementPage}></i>
-        <i className="arrow right fr pa2 ma4" onClick={this.incrementPage}></i>
+        <i className="arrow left fl pa2 ma4" onClick={this.props.decrementPage}></i>
+        <i className="arrow right fr pa2 ma4" onClick={this.props.incrementPage}></i>
       </div>
 
     );
